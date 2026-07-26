@@ -1,0 +1,17 @@
+.sidebar{
+    width: 160px;
+    background-color: rgb(67, 0, 67);
+}
+
+.sidebar li{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+}
+
+
+.sidebar li:hover{
+    background-color: aliceblue;
+    transition: 1s;
+}
