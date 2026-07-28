@@ -1,19 +1,24 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using API.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class AuthorController
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AuthorController : ControllerBase
     {
-        public AuthorController()
-        {
-
+        private readonly AuthorService _authorService;
+        public AuthorController(AuthorService authorService)
+        {   
+            _authorService = authorService;
         }
 
-        public void Insert(Author register)
+        [HttpGet]
+        public Author Insert([FromBody]Author author)
         {
-            return;
+            var response = _authorService.Insert(new Author("JK"));
+            return author;
         }
-
-        public
     }
 }

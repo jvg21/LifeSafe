@@ -1,10 +1,30 @@
+using API.Data;
+using DotNetEnv;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi;
+
+
+Env.Load();
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
 builder.Services.AddOpenApi();
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+});
+
+
+#region DataBaseConnection
+
+//Console.WriteLine(builder.Configuration.GetConnectionString("DefaultConnection"));
+
+var ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<DBContext>(option => option.UseSqlServer(ConnectionString));
+#endregion
 
 var app = builder.Build();
 
@@ -12,6 +32,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwagger();
 }
 
 app.UseHttpsRedirection();
@@ -19,5 +40,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
 
 app.Run();
