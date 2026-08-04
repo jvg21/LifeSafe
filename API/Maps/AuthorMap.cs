@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using API.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace API.Maps
@@ -11,7 +12,10 @@ namespace API.Maps
 
             builder.HasKey(a => a.Id);
 
-            builder.Property(a => a.Name).HasMaxLength(50).IsRequired();
+            builder.Property(a => a.Name).HasMaxLength(80).IsRequired();
+            builder.HasIndex(a => a.Name).IsUnique();
+
+            //Many to Many Book_Author FK on the BookMap
         }
     }
 }

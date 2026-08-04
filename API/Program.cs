@@ -1,4 +1,6 @@
 using API.Data;
+using API.Repositories;
+using API.Services;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
@@ -18,6 +20,9 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 
+builder.Services.AddScoped<AuthorService>();
+builder.Services.AddScoped<AuthorRepository>();
+
 #region DataBaseConnection
 
 //Console.WriteLine(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -33,6 +38,10 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("v1/swagger.json", "My API V1");
+    }); ;
 }
 
 app.UseHttpsRedirection();

@@ -21,7 +21,7 @@ namespace API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Author", b =>
+            modelBuilder.Entity("API.Models.Author", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -31,18 +31,18 @@ namespace API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("ULR")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Author", (string)null);
                 });
 
-            modelBuilder.Entity("Book", b =>
+            modelBuilder.Entity("API.Models.Book", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -50,16 +50,224 @@ namespace API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Title")
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Book", (string)null);
+                });
+
+            modelBuilder.Entity("API.Models.File", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("Author_Id")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Book_Id")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("Content")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("Extension")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ULR")
+                    b.Property<string>("Path")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("StorageBytes")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("StorageType")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Author_Id");
+
+                    b.HasIndex("Book_Id");
+
+                    b.ToTable("File", (string)null);
+                });
+
+            modelBuilder.Entity("API.Models.Folder", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1000L);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ParentFolderId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Folder", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Author"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Book"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Comic"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Video"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Music"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Games"
+                        });
+                });
+
+            modelBuilder.Entity("API.Models.Url", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AuthorId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Author_Id")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Book_Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Books");
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("Author_Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("Book_Id");
+
+                    b.ToTable("Url", (string)null);
+                });
+
+            modelBuilder.Entity("AuthorBook", b =>
+                {
+                    b.Property<int>("AuthorsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BooksId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AuthorsId", "BooksId");
+
+                    b.HasIndex("BooksId");
+
+                    b.ToTable("Book_Author", (string)null);
+                });
+
+            modelBuilder.Entity("API.Models.File", b =>
+                {
+                    b.HasOne("API.Models.Author", "Author")
+                        .WithMany()
+                        .HasForeignKey("Author_Id");
+
+                    b.HasOne("API.Models.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("Book_Id");
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Book");
+                });
+
+            modelBuilder.Entity("API.Models.Url", b =>
+                {
+                    b.HasOne("API.Models.Author", null)
+                        .WithMany("Urls")
+                        .HasForeignKey("AuthorId");
+
+                    b.HasOne("API.Models.Author", "Author")
+                        .WithMany()
+                        .HasForeignKey("Author_Id");
+
+                    b.HasOne("API.Models.Book", null)
+                        .WithMany("Urls")
+                        .HasForeignKey("BookId");
+
+                    b.HasOne("API.Models.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("Book_Id");
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Book");
+                });
+
+            modelBuilder.Entity("AuthorBook", b =>
+                {
+                    b.HasOne("API.Models.Author", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Models.Book", null)
+                        .WithMany()
+                        .HasForeignKey("BooksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("API.Models.Author", b =>
+                {
+                    b.Navigation("Urls");
+                });
+
+            modelBuilder.Entity("API.Models.Book", b =>
+                {
+                    b.Navigation("Urls");
                 });
 #pragma warning restore 612, 618
         }

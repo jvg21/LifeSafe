@@ -2,7 +2,20 @@
 {
     public class Enum
     {
-
+        public enum Entities
+        {
+            Author = 1,
+            Book = 2,
+            Comic = 3,
+            Video = 4,
+            Music = 5,
+            Games = 6
+        }
+        public enum StorageType
+        {
+            Database = 0,
+            FileSystem = 1
+        }
         public enum ReadingStatus
         {
             MaybeRead = 0,

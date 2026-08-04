@@ -1,13 +1,16 @@
-﻿using System;
+﻿namespace API.Models;
 
 public class Book
 {
 	public int Id { get; set; }
-	public string Title { get; set; }
-	public string? ULR { get; set; }
+	public string Name { get; set; }
 
-	public Book()
+	public ICollection<Author> Authors { get; set; } = new List<Author>();
+    public ICollection<Url> Urls { get; set; } = new List<Url>();
+
+    public Book(string Name)
 	{
+		this.Name = Name;
 	}
 
 

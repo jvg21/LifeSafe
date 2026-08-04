@@ -1,16 +1,15 @@
-﻿using System;
-
+﻿namespace API.Models;
 public class Author
 {
-    public Author(string name)
+    public Author(string Name)
     {
-        Name = name;
+        this.Name = Name;
     }
     public int Id { get; set; }
 	public string Name { get; set; }
-	public string? ULR { get; set; }
 
-	
+    public ICollection<Book> Books { get; set; } = new List<Book>();
 
+    public ICollection<Url> Urls { get; set; } = new List<Url>();
 
 }
